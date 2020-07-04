@@ -30,6 +30,8 @@
   ],
   "rules": {
     "prettier/prettier": "error",
+    "react/jsx-props-no-spreading": "off",
+    "react/prop-types": "off",
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "warn",
     "react/jsx-filename-extension": [
@@ -43,7 +45,7 @@
     "react/jsx-max-props-per-line": [
       1,
       {
-        "maximum": 1,
+        "maximum": 3,
         "when": "always"
       }
     ],
@@ -51,10 +53,9 @@
     "@typescript-eslint/explicit-function-return-type": [
       "error",
       {
-        "allowExpression": true
+        "allowExpressions": true
       }
     ],
-    "import/not-unsolved": [],
     "import/extensions": [
       "error",
       "ignorePackages",
@@ -66,7 +67,14 @@
   },
   "settings": {
     "import/resolver": {
-      "typescript": {}
+      "node": {
+        "extensions": [
+          ".js",
+          ".jsx",
+          ".ts",
+          ".tsx"
+        ]
+      }
     }
   }
 }
