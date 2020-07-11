@@ -6,7 +6,9 @@ import * as Yup from 'yup';
 
 import logoImage from '../../assets/svg/logo.svg';
 
-import { useAuth } from '../../hooks/AuthContext';
+import { useAuth } from '../../hooks/auth';
+import { useToast } from '../../hooks/toast';
+
 import Button from '../../components/Button';
 import InputField from '../../components/InputField';
 
@@ -23,6 +25,7 @@ const SignIn: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
 
   const { signIn } = useAuth();
+  const { addToast } = useToast();
 
   const handleSubmit = useCallback(
     async (data: SignInFormData) => {
@@ -40,13 +43,20 @@ const SignIn: React.FC = () => {
           abortEarly: false,
         });
 
-        signIn({ email: data.email, password: data.password });
+        await signIn({ email: data.email, password: data.password });
       } catch (err) {
-        const errors = getValidationErrors(err);
-        formRef.current?.setErrors(errors);
+        if (err instanceof Yup.ValidationError) {
+          const errors = getValidationErrors(err);
+          formRef.current?.setErrors(errors);
+        }
+        addToast({
+          title: 'Erro na autenticação',
+          description: 'Verifique suas credenciais',
+          type: 'success',
+        });
       }
     },
-    [signIn],
+    [signIn, addToast],
   );
 
   return (
