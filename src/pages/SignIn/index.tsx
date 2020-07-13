@@ -2,7 +2,7 @@ import React, { useCallback, useRef } from 'react';
 import { FiMail, FiLock, FiLogIn } from 'react-icons/fi';
 import { Form } from '@unform/web';
 import { FormHandles } from '@unform/core';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import * as Yup from 'yup';
 
 import logoImage from '../../assets/svg/logo.svg';
@@ -27,6 +27,7 @@ const SignIn: React.FC = () => {
 
   const { signIn } = useAuth();
   const { addToast } = useToast();
+  const history = useHistory();
 
   const handleSubmit = useCallback(
     async (data: SignInFormData) => {
@@ -37,7 +38,7 @@ const SignIn: React.FC = () => {
           email: Yup.string()
             .required('Email obrigatório')
             .email('Digite um email válido'),
-          password: Yup.string().min(6, 'Minimo de 6 digitos'),
+          password: Yup.string().min(6, 'Mínimo de 6 dígitos'),
         });
 
         await schema.validate(data, {
@@ -45,6 +46,8 @@ const SignIn: React.FC = () => {
         });
 
         await signIn({ email: data.email, password: data.password });
+
+        history.push('/dashboard');
       } catch (err) {
         if (err instanceof Yup.ValidationError) {
           const errors = getValidationErrors(err);
@@ -56,11 +59,11 @@ const SignIn: React.FC = () => {
         addToast({
           title: 'Erro na autenticação',
           description: 'Verifique suas credenciais',
-          type: 'success',
+          type: 'error',
         });
       }
     },
-    [signIn, addToast],
+    [signIn, addToast, history],
   );
 
   return (
